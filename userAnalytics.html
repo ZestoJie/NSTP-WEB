@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Analytics</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+  <link rel="stylesheet" href="css/userAnalytics.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <i class="fa-solid fa-seedling"></i>
+      <span>GrowSauYou</span>
+    </div>
+
+    <div class="hotline">BRGY SAUYO HOTLINE: 0919 096 6996</div>
+
+    <div class="top-icons">
+      <i class="fa-brands fa-instagram"></i>
+      <i class="fa-brands fa-facebook"></i>
+    </div>
+  </header>
+
+  <div class="page">
+    <aside class="sidebar">
+      <a href="#" class="side-btn">
+        <i class="fa-solid fa-house"></i>
+      </a>
+      <a href="#" class="side-btn">
+        <i class="fa-solid fa-circle-user"></i>
+      </a>
+      <a href="#" class="side-btn active">
+        <i class="fa-solid fa-chart-column"></i>
+      </a>
+    </aside>
+
+    <main class="main">
+      <h1>USERNAME | MY DASHBOARD</h1>
+
+      <section class="stats">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+          <div class="stat-label">Tasks Completed</div>
+          <div class="stat-value">3</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-award"></i></div>
+          <div class="stat-label">Certificates Earned</div>
+          <div class="stat-value">1</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-regular fa-clock"></i></div>
+          <div class="stat-label">Hours Rendered</div>
+          <div class="stat-value">24</div>
+        </div>
+      </section>
+
+      <section class="tasks">
+        <article class="task-panel">
+          <div class="task-left">
+            <h2>TASK 1</h2>
+            <p>Details &nbsp; Contact</p>
+          </div>
+
+          <div class="task-center">
+            <div class="progress-ring" data-progress="100" data-color="#52c7c9">
+              <svg class="progress-svg" width="124" height="124" viewBox="0 0 124 124">
+                <circle class="bg" cx="62" cy="62" r="46"></circle>
+                <circle class="meter" cx="62" cy="62" r="46"></circle>
+              </svg>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <div class="task-right">
+            <div class="eligibility yes">ELIGIBLE</div>
+            <button class="cert-btn green">CERTIFICATE</button>
+          </div>
+        </article>
+
+        <article class="task-panel">
+          <div class="task-left">
+            <h2>TASK 2</h2>
+            <p>Details &nbsp; Contact</p>
+          </div>
+
+          <div class="task-center">
+            <div class="progress-ring" data-progress="75" data-color="#ff4c41">
+              <svg class="progress-svg" width="124" height="124" viewBox="0 0 124 124">
+                <circle class="bg" cx="62" cy="62" r="46"></circle>
+                <circle class="meter" cx="62" cy="62" r="46"></circle>
+              </svg>
+              <span>75%</span>
+            </div>
+          </div>
+
+          <div class="task-right">
+            <div class="eligibility no">NOT ELIGIBLE</div>
+            <button class="cert-btn gray">CERTIFICATE</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="bottom-grid">
+        <div class="for-you-section">
+          <h2>FOR YOU</h2>
+
+          <div class="for-you-cards">
+            <div class="recommend-card">
+              <img
+                src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=80"
+                alt="Seed planting"
+              />
+              <div class="recommend-body">
+                <h3>SEED PLANTING</h3>
+                <h4>IN SAUYO</h4>
+                <div class="fake-lines"></div>
+              </div>
+            </div>
+
+            <div class="recommend-card">
+              <img
+                src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=900&q=80"
+                alt="Composting waste"
+              />
+              <div class="recommend-body">
+                <h3>COMPOSTING WASTE</h3>
+                <h4>IN SAUYO</h4>
+                <div class="fake-lines"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="leaderboard">
+          <div class="leader-top">
+            <h3>LEADERBOARD</h3>
+            <span>See All</span>
+          </div>
+
+          <div class="leader-item">
+            <div class="leader-user">
+              <i class="fa-solid fa-circle-user"></i>
+              <strong>USERNAME</strong>
+            </div>
+            <div class="leader-hours">
+              <i class="fa-solid fa-trophy"></i>
+              <span>143 hours</span>
+            </div>
+          </div>
+
+          <div class="leader-item">
+            <div class="leader-user">
+              <i class="fa-solid fa-circle-user"></i>
+              <strong>USERNAME</strong>
+            </div>
+            <div class="leader-hours">
+              <i class="fa-solid fa-trophy"></i>
+              <span>120 hours</span>
+            </div>
+          </div>
+
+          <div class="leader-item">
+            <div class="leader-user">
+              <i class="fa-solid fa-circle-user"></i>
+              <strong>USERNAME</strong>
+            </div>
+            <div class="leader-hours">
+              <i class="fa-solid fa-trophy"></i>
+              <span>90 hours</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/userAnalytics.js"></script>
+</body>
+</html>
