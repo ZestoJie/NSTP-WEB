@@ -102,7 +102,7 @@
             <div class="form-group">
                 <label>Minimum Age:</label>
                 <input type="number" id="minAge" value="18">
-                <button onclick="updateRestrictions()">Update</button>
+                <button onclick="saveRestrictionsFromUI()">Update</button>
             </div>
             <div class="form-group">
                 <label>Valid Barangays (comma-separated):</label>
@@ -168,13 +168,12 @@
                     <option value="task">Task Update</option>
                     <option value="certification">Certification Update</option>
                 </select>
-                <button onclick="sendNotification()">Send Notification</button>
+                <button onclick="sendNotificationFromUI()">Send Notification</button>
             </div>
             <div id="notificationHistory"></div>
         </div>
     </div>
 
-    <!-- Modals -->
     <div id="taskModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(84,107,65,0.6); justify-content:center; align-items:center; z-index:99999;">
         <div style="background:rgba(255,248,236,0.96); padding:20px; border-radius:16px; width:400px; border:1px solid rgba(84,107,65,0.22);">
             <h3 id="taskModalTitle">Create Task</h3>
@@ -195,5 +194,4 @@
 
     <script src="admin.js"></script>
 </body>
-</html></content>
-<parameter name="filePath">c:\Users\rhejie carl\Downloads\nstp-finals-G3V2.0\nstp-finals-G3V2.0\Group 3\admin.html
+</html>
