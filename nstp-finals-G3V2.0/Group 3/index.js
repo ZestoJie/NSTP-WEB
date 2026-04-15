@@ -27,13 +27,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+
 const defaultImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='280' viewBox='0 0 500 280'%3E%3Crect width='500' height='280' fill='%23546B41'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Segoe UI, sans-serif' font-size='24' fill='%23FFF8EC'%3EImage unavailable%3C/text%3E%3C/svg%3E";
+
+const USERS_KEY = "itanimUsers";
+const TASKS_KEY = "itanimTasks";
+const PROGRAMS_KEY = "itanimLocalPrograms";
+const NOTIFICATIONS_KEY = "itanimNotifications";
+const CURRENT_EMAIL_KEY = "currentUserEmail";
+const CURRENT_ROLE_KEY = "currentUserRole";
+
 const programDocs = [];
 let selectedProgramId = null;
-
 let currentUser = {
-    id: "user1",
-    role: "visitor"
+    id: "visitor",
+    role: "visitor",
+    email: null
 };
 
 const roleSwitcher = document.getElementById("roleSwitcher");
@@ -49,9 +58,8 @@ const detailHours = document.getElementById("detailHours");
 const detailJoined = document.getElementById("detailJoined");
 const adminLink = document.getElementById("adminLink");
 const userDashboardLink = document.getElementById("userDashboardLink");
+const adminControls = document.getElementById("adminControls");
 
-const localStorageKey = "itanimLocalPrograms";
-const localTasksKey = "itanimTasks";
 const initialFallbackPrograms = [
     {
         id: "local-1",
@@ -82,24 +90,104 @@ const initialFallbackPrograms = [
     }
 ];
 
-function getCurrentUserData() {
-    if (currentUser.role === "user") {
-        const storedUsers = JSON.parse(localStorage.getItem('itanimUsers') || '[]');
-        if (storedUsers.length > 0) {
-            return storedUsers[0];
-        }
-        return { id: 'user1', role: 'user', name: 'Demo User', skills: ['environment', 'gardening'] };
+function getStorageData(key, fallback = []) {
+    try {
+        return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+    } catch {
+        return fallback;
     }
-    return { id: currentUser.id, role: currentUser.role, skills: [] };
 }
 
-let users = JSON.parse(localStorage.getItem('itanimUsers') || '[]');
-let tasks = JSON.parse(localStorage.getItem('itanimTasks') || '[]');
+function setStorageData(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
 
-const isFirebaseConfigured = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("YOUR_API_KEY") && !firebaseConfig.apiKey.includes("XXXX");
+function saveUsers(users) {
+    setStorageData(USERS_KEY, users);
+}
+
+function saveTasks(tasks) {
+    setStorageData(TASKS_KEY, tasks);
+}
+
+function savePrograms() {
+    setStorageData(PROGRAMS_KEY, programDocs);
+}
+
+function getCurrentUserData() {
+    const users = getStorageData(USERS_KEY);
+    const currentEmail = localStorage.getItem(CURRENT_EMAIL_KEY);
+
+    if (currentEmail) {
+        const found = users.find(u => u.email === currentEmail);
+        if (found) {
+            return found;
+        }
+    }
+
+    if (currentUser.role === "user") {
+        return users[0] || {
+            id: "user1",
+            role: "user",
+            name: "Demo User",
+            email: "demo@example.com",
+            skills: ["environment", "gardening"],
+            enrolledPrograms: [],
+            hours: 0,
+            badges: [],
+            certifications: []
+        };
+    }
+
+    if (currentUser.role === "admin") {
+        return {
+            id: "admin1",
+            role: "admin",
+            name: "Admin",
+            email: "admin@example.com",
+            skills: []
+        };
+    }
+
+    return { id: "visitor", role: "visitor", skills: [] };
+}
+
+const isFirebaseConfigured =
+    firebaseConfig.apiKey &&
+    !firebaseConfig.apiKey.includes("YOUR_API_KEY") &&
+    !firebaseConfig.apiKey.includes("XXXX");
+
 const useFirestore = isFirebaseConfigured;
 
+function loadRoleFromSession() {
+    const savedRole = localStorage.getItem(CURRENT_ROLE_KEY);
+    const savedEmail = localStorage.getItem(CURRENT_EMAIL_KEY);
+
+    if (savedRole) {
+        currentUser.role = savedRole;
+    }
+
+    if (savedEmail) {
+        currentUser.email = savedEmail;
+        const users = getStorageData(USERS_KEY);
+        const matchedUser = users.find(u => u.email === savedEmail);
+        if (matchedUser) {
+            currentUser.id = matchedUser.id || matchedUser.email;
+            if (matchedUser.role) {
+                currentUser.role = matchedUser.role;
+            } else if (currentUser.role === "visitor") {
+                currentUser.role = "user";
+            }
+        }
+    }
+
+    if (roleSwitcher) {
+        roleSwitcher.value = currentUser.role;
+    }
+}
+
 function updateUserUI() {
+    if (!userLabel) return;
     userLabel.innerText = `Role: ${currentUser.role}`;
     if (!useFirestore) {
         userLabel.innerText += " (offline demo)";
@@ -109,47 +197,57 @@ function updateUserUI() {
 function setRoleBasedUI() {
     const isAdmin = currentUser.role === "admin";
     const isUser = currentUser.role === "user";
-    addBtn.style.display = isAdmin ? "block" : "none";
-    if (adminLink) {
-        adminLink.style.display = isAdmin ? "inline" : "none";
-    }
-    if (userDashboardLink) {
-        userDashboardLink.style.display = isUser ? "inline" : "none";
-    }
+
+    if (addBtn) addBtn.style.display = isAdmin ? "block" : "none";
+    if (adminLink) adminLink.style.display = isAdmin ? "inline" : "none";
+    if (userDashboardLink) userDashboardLink.style.display = isUser ? "inline" : "none";
 }
 
-roleSwitcher.addEventListener("change", (e) => {
-    currentUser.role = e.target.value;
-    updateUserUI();
-    setRoleBasedUI();
-    renderPrograms(programDocs);
-});
+if (roleSwitcher) {
+    roleSwitcher.addEventListener("change", (e) => {
+        currentUser.role = e.target.value;
+        localStorage.setItem(CURRENT_ROLE_KEY, currentUser.role);
 
-setRoleBasedUI();
-updateUserUI();
+        if (currentUser.role === "visitor") {
+            localStorage.removeItem(CURRENT_EMAIL_KEY);
+            currentUser.email = null;
+            currentUser.id = "visitor";
+        }
 
-addBtn.addEventListener("click", () => {
-    if (currentUser.role !== "admin") {
-        alert("Only admins can add programs.");
-        return;
-    }
-    modal.style.display = "flex";
-});
+        const currentData = getCurrentUserData();
+        currentUser.id = currentData.id || currentData.email || currentUser.id;
+
+        updateUserUI();
+        setRoleBasedUI();
+        renderPrograms(programDocs);
+    });
+}
+
+if (addBtn) {
+    addBtn.addEventListener("click", () => {
+        if (currentUser.role !== "admin") {
+            alert("Only admins can add programs.");
+            return;
+        }
+        modal.style.display = "flex";
+    });
+}
 
 window.closeModal = () => {
-    console.log("Closing modal");
     if (modal) modal.style.display = "none";
-    // Clear form fields
     document.getElementById("programTitle").value = "";
     document.getElementById("programHours").value = "";
     document.getElementById("programDesc").value = "";
     document.getElementById("programImage").value = "";
-    // Reset edit mode
+    const preview = document.getElementById("programImagePreview");
+    if (preview) {
+        preview.src = "";
+        preview.style.display = "none";
+    }
     window.editingProgramId = undefined;
-    // Reset button text
     const submitBtn = document.querySelector('button[onclick="submitProgram()"]');
     if (submitBtn) {
-        submitBtn.textContent = '+ Add Program';
+        submitBtn.textContent = "Add";
     }
 };
 
@@ -160,122 +258,96 @@ window.closeDetailModal = () => {
 
 window.deleteSelectedProgram = async () => {
     if (!selectedProgramId) return;
-    
-    if (currentUser.role !== 'admin') {
-        alert('Only admins can delete programs.');
+
+    if (currentUser.role !== "admin") {
+        alert("Only admins can delete programs.");
         return;
     }
-    
-    if (!confirm('Are you sure you want to delete this program?')) {
+
+    if (!confirm("Are you sure you want to delete this program?")) {
         return;
     }
-    
-    try {
-        // Remove from programDocs array
-        const index = programDocs.findIndex(p => p.id === selectedProgramId);
-        if (index > -1) {
-            programDocs.splice(index, 1);
-            saveLocalPrograms();
-            renderPrograms(programDocs);
-            window.closeDetailModal();
-            alert('Program deleted successfully!');
-        } else {
-            alert('Program not found.');
-        }
-    } catch (err) {
-        console.error(err);
-        alert('Error deleting program: ' + err.message);
+
+    const index = programDocs.findIndex(p => p.id === selectedProgramId);
+    if (index === -1) {
+        alert("Program not found.");
+        return;
     }
+
+    programDocs.splice(index, 1);
+    savePrograms();
+    renderPrograms(programDocs);
+    closeDetailModal();
+    alert("Program deleted successfully!");
 };
 
 window.editSelectedProgram = () => {
     if (!selectedProgramId) return;
-    
-    if (currentUser.role !== 'admin') {
-        alert('Only admins can edit programs.');
+
+    if (currentUser.role !== "admin") {
+        alert("Only admins can edit programs.");
         return;
     }
-    
+
     const programToEdit = programDocs.find(p => p.id === selectedProgramId);
     if (!programToEdit) {
-        alert('Program not found.');
+        alert("Program not found.");
         return;
     }
-    
-    // Populate the add program form with current values
-    document.getElementById('programTitle').value = programToEdit.title || '';
-    document.getElementById('programHours').value = programToEdit.hours || '';
-    document.getElementById('programDesc').value = programToEdit.desc || '';
-    // Note: image field will be empty and user can upload a new one
-    
-    // Change button text temporarily
+
+    document.getElementById("programTitle").value = programToEdit.title || "";
+    document.getElementById("programHours").value = programToEdit.hours || "";
+    document.getElementById("programDesc").value = programToEdit.desc || "";
+
+    const preview = document.getElementById("programImagePreview");
+    if (preview && programToEdit.image) {
+        preview.src = programToEdit.image;
+        preview.style.display = "block";
+    }
+
     const submitBtn = document.querySelector('button[onclick="submitProgram()"]');
     if (submitBtn) {
-        const oldText = submitBtn.textContent;
-        submitBtn.textContent = 'Update Program';
-        
-        // Store the edit mode
-        window.editingProgramId = selectedProgramId;
+        submitBtn.textContent = "Update Program";
     }
-    
-    window.closeDetailModal();
-    modal.style.display = 'flex';
+
+    window.editingProgramId = selectedProgramId;
+    closeDetailModal();
+    modal.style.display = "flex";
 };
 
-detailModal.addEventListener("click", (e) => {
-    if (e.target === detailModal) {
-        window.closeDetailModal();
-    }
-});
+if (detailModal) {
+    detailModal.addEventListener("click", (e) => {
+        if (e.target === detailModal) {
+            closeDetailModal();
+        }
+    });
+}
 
 function loadLocalPrograms() {
-    const saved = localStorage.getItem(localStorageKey);
-    console.debug("loadLocalPrograms: saved data =", saved ? `${saved.length} bytes` : 'null');
+    const saved = localStorage.getItem(PROGRAMS_KEY);
     if (saved) {
         try {
             const parsed = JSON.parse(saved);
-            console.debug("loadLocalPrograms: parsed", Array.isArray(parsed) ? `${parsed.length} items` : 'not an array');
             return Array.isArray(parsed) ? parsed : [];
-        } catch (err) {
-            console.warn("Could not parse saved programs", err);
+        } catch {
+            return [...initialFallbackPrograms];
         }
     }
-    console.debug("loadLocalPrograms: returning initialFallbackPrograms");
     return [...initialFallbackPrograms];
-}
-
-function saveLocalPrograms() {
-    try {
-        localStorage.setItem(localStorageKey, JSON.stringify(programDocs));
-        console.debug("saveLocalPrograms: saved", programDocs.length, "programs");
-    } catch (err) {
-        console.warn("saveLocalPrograms failed (likely storage quota).", err);
-        alert("Program image may be too large to save in this browser. Try a smaller image.");
-    }
-}
-
-function saveUsers() {
-    localStorage.setItem('itanimUsers', JSON.stringify(users));
-}
-
-function saveTasks() {
-    localStorage.setItem('itanimTasks', JSON.stringify(tasks));
 }
 
 function readFileAsDataUrl(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result || ''));
-        reader.onerror = () => reject(new Error('Could not read file'));
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("Could not read file"));
         reader.readAsDataURL(file);
     });
 }
 
 async function readImageAsCompressedDataUrl(file, { maxW = 1400, maxH = 900, quality = 0.82 } = {}) {
-    // Helps avoid localStorage quota issues (large images silently fail to save)
-    // Falls back to normal DataURL if compression isn't supported.
     try {
-        if (!file || !file.type || !file.type.startsWith('image/')) {
+        if (!file || !file.type || !file.type.startsWith("image/")) {
             return await readFileAsDataUrl(file);
         }
 
@@ -284,68 +356,57 @@ async function readImageAsCompressedDataUrl(file, { maxW = 1400, maxH = 900, qua
         const w = Math.max(1, Math.round(bitmap.width * ratio));
         const h = Math.max(1, Math.round(bitmap.height * ratio));
 
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = w;
         canvas.height = h;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         if (!ctx) return await readFileAsDataUrl(file);
 
         ctx.drawImage(bitmap, 0, 0, w, h);
 
-        const outType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-        const dataUrl = canvas.toDataURL(outType, outType === 'image/jpeg' ? quality : undefined);
-        if (typeof dataUrl === 'string' && dataUrl.startsWith('data:image/')) return dataUrl;
+        const outType = file.type === "image/png" ? "image/png" : "image/jpeg";
+        const dataUrl = canvas.toDataURL(outType, outType === "image/jpeg" ? quality : undefined);
+        if (typeof dataUrl === "string" && dataUrl.startsWith("data:image/")) {
+            return dataUrl;
+        }
+
         return await readFileAsDataUrl(file);
     } catch {
         return await readFileAsDataUrl(file);
     }
 }
 
-function isProbablyBlobUrl(url) {
-    return typeof url === 'string' && url.startsWith('blob:');
-}
-
 function syncProgramsFromTasksIfNeeded() {
-    // If admin task management is being used, surface those tasks as "Available Programs"
-    // so add/edit/delete in admin reflects here.
     try {
-        const raw = localStorage.getItem(localTasksKey);
-        if (!raw) return;
-        const adminTasks = JSON.parse(raw);
+        const adminTasks = getStorageData(TASKS_KEY);
         if (!Array.isArray(adminTasks) || adminTasks.length === 0) return;
 
-        // Only overwrite if current program list is empty OR was previously synced.
         const current = loadLocalPrograms();
-        const wasSynced = Array.isArray(current) && current.every(p => p && p._source === 'task');
+        const wasSynced = Array.isArray(current) && current.length > 0 && current.every(p => p && p._source === "task");
+
         if (current.length > 0 && !wasSynced) return;
 
         programDocs.length = 0;
         programDocs.push(...adminTasks.map(t => ({
             id: t.id,
             title: t.name,
-            hours: String(t.hours ?? ''),
-            desc: t.desc || '',
+            hours: String(t.hours ?? ""),
+            desc: t.desc || "",
             image: (t.attachments && t.attachments[0] && t.attachments[0].dataUrl) ? t.attachments[0].dataUrl : defaultImage,
             joined: t.joined || [],
             skills: t.skills || [],
-            _source: 'task'
+            _source: "task"
         })));
-        saveLocalPrograms();
+        savePrograms();
     } catch {
-        // ignore
+        // ignore sync errors
     }
 }
 
 function renderPrograms(programs) {
-    // Debug: log what we're rendering
-    console.log("renderPrograms called with", programs.length, "programs:");
-    programs.forEach((p, idx) => {
-        console.log(`  [${idx}]`, p.title || '(no title)', "image:", p.image ? p.image.substring(0, 50) : '(none)');
-    });
+    if (!publicList) return;
 
-    // CLEAR THE ENTIRE LIST first
     publicList.innerHTML = "";
-    console.log("Cleared publicList");
 
     if (!programs.length) {
         publicList.innerHTML = `
@@ -365,7 +426,6 @@ function renderPrograms(programs) {
         item.addEventListener("click", () => showProgramDetail(program));
 
         const image = document.createElement("img");
-        // Try to load program image, fall back to default if broken
         image.src = program.image || defaultImage;
         image.alt = program.title || "Program image";
         image.style.display = "block";
@@ -378,8 +438,10 @@ function renderPrograms(programs) {
             image.src = defaultImage;
         };
 
-        const hasSkillMatch = Array.isArray(currentUserData.skills) && Array.isArray(program.skills)
-            && program.skills.some(skill => currentUserData.skills.includes(skill));
+        const hasSkillMatch =
+            Array.isArray(currentUserData.skills) &&
+            Array.isArray(program.skills) &&
+            program.skills.some(skill => currentUserData.skills.includes(skill));
 
         if (hasSkillMatch && currentUser.role === "user") {
             const badge = document.createElement("div");
@@ -411,9 +473,11 @@ function renderPrograms(programs) {
         joinedLabel.textContent = `${(program.joined || []).length} joined`;
 
         const actionArea = document.createElement("div");
+
         if (currentUser.role === "user" || currentUser.role === "admin") {
             const joinButton = document.createElement("button");
-            joinButton.textContent = (program.joined || []).includes(currentUser.id) ? "Joined" : "Join";
+            const currentId = currentUserData.id || currentUser.id;
+            joinButton.textContent = (program.joined || []).includes(currentId) ? "Joined" : "Join";
             joinButton.style.padding = "8px 12px";
             joinButton.style.borderRadius = "12px";
             joinButton.style.border = "none";
@@ -455,15 +519,11 @@ function showProgramDetail(program) {
     detailDesc.textContent = program.desc || "No description provided.";
     detailHours.textContent = `${program.hours || 0}`;
     detailJoined.textContent = `${(program.joined || []).length}`;
-    
-    // Show/hide admin controls
-    const adminControls = document.getElementById('adminControls');
-    if (currentUser.role === 'admin') {
-        adminControls.style.display = 'flex';
-    } else {
-        adminControls.style.display = 'none';
+
+    if (adminControls) {
+        adminControls.style.display = currentUser.role === "admin" ? "flex" : "none";
     }
-    
+
     detailModal.style.display = "flex";
 }
 
@@ -473,26 +533,46 @@ window.joinProgram = async (id, joined) => {
         return;
     }
 
-    if ((joined || []).includes(currentUser.id)) {
+    const currentUserData = getCurrentUserData();
+    const currentId = currentUserData.id || currentUser.id;
+
+    if ((joined || []).includes(currentId)) {
         alert("You already joined this program.");
         return;
     }
 
     if (!useFirestore) {
         const program = programDocs.find((item) => item.id === id);
-        if (program) {
-            program.joined = [...new Set([...(program.joined || []), currentUser.id])];
-            saveLocalPrograms();
-            renderPrograms(programDocs);
+        if (!program) {
+            alert("Program not found.");
             return;
         }
-        alert("Program not found.");
+
+        program.joined = [...new Set([...(program.joined || []), currentId])];
+
+        const storedUsers = getStorageData(USERS_KEY);
+        const currentIndex = storedUsers.findIndex(u =>
+            (currentUserData.email && u.email === currentUserData.email) ||
+            (currentUserData.id && u.id === currentUserData.id)
+        );
+
+        if (currentIndex !== -1) {
+            storedUsers[currentIndex].enrolledPrograms = storedUsers[currentIndex].enrolledPrograms || [];
+            if (!storedUsers[currentIndex].enrolledPrograms.includes(id)) {
+                storedUsers[currentIndex].enrolledPrograms.push(id);
+            }
+            saveUsers(storedUsers);
+        }
+
+        savePrograms();
+        renderPrograms(programDocs);
+        alert("Joined program successfully.");
         return;
     }
 
     try {
         await updateDoc(doc(db, "programs", id), {
-            joined: arrayUnion(currentUser.id)
+            joined: arrayUnion(currentId)
         });
     } catch (err) {
         console.error(err);
@@ -502,25 +582,23 @@ window.joinProgram = async (id, joined) => {
 
 async function uploadProgramImage(file) {
     if (!file) return defaultImage;
+
     if (!useFirestore) {
-        // IMPORTANT: blob: URLs do not persist after refresh; store a data URL instead.
         try {
             return await readImageAsCompressedDataUrl(file);
-        } catch (err) {
-            console.warn("Local image read failed, using placeholder image", err);
+        } catch {
             return defaultImage;
         }
     }
+
     try {
         const imageRef = ref(storage, `programImages/${Date.now()}-${file.name}`);
         await uploadBytes(imageRef, file);
         return await getDownloadURL(imageRef);
-    } catch (err) {
-        console.warn("Image upload failed, falling back to local image", err);
+    } catch {
         try {
             return await readImageAsCompressedDataUrl(file);
-        } catch (e2) {
-            console.warn("Local fallback image read failed, using placeholder image", e2);
+        } catch {
             return defaultImage;
         }
     }
@@ -544,18 +622,16 @@ window.submitProgram = async () => {
         }
 
         const isEditing = window.editingProgramId !== undefined;
-        
-        // If editing and no new image selected, keep the old one
         let imageURL;
+
         if (isEditing && !file) {
             const existingProgram = programDocs.find(p => p.id === window.editingProgramId);
-            imageURL = existingProgram.image;
+            imageURL = existingProgram?.image || defaultImage;
         } else {
             imageURL = await uploadProgramImage(file);
         }
-        
+
         if (isEditing) {
-            // Update existing program
             const index = programDocs.findIndex(p => p.id === window.editingProgramId);
             if (index > -1) {
                 programDocs[index].title = title;
@@ -566,7 +642,6 @@ window.submitProgram = async () => {
             window.editingProgramId = undefined;
             alert("Program updated!");
         } else {
-            // Add new program
             const newProgram = {
                 id: `local-${Date.now()}`,
                 title,
@@ -590,8 +665,8 @@ window.submitProgram = async () => {
             programDocs.push(newProgram);
             alert("Program added!");
         }
-        
-        saveLocalPrograms();
+
+        savePrograms();
         renderPrograms(programDocs);
         closeModal();
     } catch (err) {
@@ -603,12 +678,8 @@ window.submitProgram = async () => {
 function listenPrograms() {
     if (!useFirestore) {
         programDocs.length = 0;
-        const loaded = loadLocalPrograms();
-        console.log("listenPrograms (offline mode): loaded", loaded.length, "programs from", (loaded[0]?.title || 'unknown'));
-        programDocs.push(...loaded);
-        console.log("listenPrograms: programDocs now has", programDocs.length, "programs");
+        programDocs.push(...loadLocalPrograms());
         renderPrograms(programDocs);
-        console.log("listenPrograms: renderPrograms complete");
         return;
     }
 
@@ -619,14 +690,12 @@ function listenPrograms() {
                 programDocs.push({ id: d.id, ...d.data() });
             });
             renderPrograms(programDocs);
-        }, (err) => {
-            console.warn("Realtime program list unavailable", err);
+        }, () => {
             programDocs.length = 0;
             programDocs.push(...loadLocalPrograms());
             renderPrograms(programDocs);
         });
-    } catch (err) {
-        console.warn("Realtime program list unavailable", err);
+    } catch {
         programDocs.length = 0;
         programDocs.push(...loadLocalPrograms());
         renderPrograms(programDocs);
@@ -642,7 +711,7 @@ window.debugAddSampleProgram = () => {
         image: defaultImage,
         joined: []
     });
-    saveLocalPrograms();
+    savePrograms();
     renderPrograms(programDocs);
     alert("Debug sample program added.");
 };
@@ -653,23 +722,28 @@ window.debugShowPrograms = () => {
 };
 
 window.debugAddSampleUser = () => {
+    const users = getStorageData(USERS_KEY);
     const newUser = {
         id: `user${Date.now()}`,
         name: "Debug User",
-        email: "debug@example.com",
+        email: `debug${Date.now()}@example.com`,
         age: 20,
         barangay: "Debug",
         skills: ["Debugging"],
         status: "pending",
         hours: 0,
-        badge: "None"
+        badge: "None",
+        enrolledPrograms: [],
+        badges: [],
+        certifications: []
     };
     users.push(newUser);
-    saveUsers();
+    saveUsers(users);
     alert("Sample user added. Check admin panel for management.");
 };
 
 window.debugAddSampleTask = () => {
+    const tasks = getStorageData(TASKS_KEY);
     const newTask = {
         id: `task${Date.now()}`,
         name: "Debug Task",
@@ -677,10 +751,11 @@ window.debugAddSampleTask = () => {
         hours: 1,
         maxVolunteers: 2,
         assigned: [],
-        status: "active"
+        status: "active",
+        attachments: []
     };
     tasks.push(newTask);
-    saveTasks();
+    saveTasks(tasks);
     alert("Sample task added. Check admin panel for management.");
 };
 
@@ -698,80 +773,76 @@ window.debugSimulateJoin = () => {
 };
 
 window.debugShowUsers = () => {
+    const users = getStorageData(USERS_KEY);
     console.log("All users:", users);
     alert(`Users: ${users.length}. Check console for details.`);
 };
 
 window.debugCleanupEverything = () => {
-    // Clear all localStorage data
-    localStorage.clear();
-    
-    // Reset programDocs to initial fallback only
+    localStorage.removeItem(USERS_KEY);
+    localStorage.removeItem(TASKS_KEY);
+    localStorage.removeItem(PROGRAMS_KEY);
+    localStorage.removeItem(NOTIFICATIONS_KEY);
+    localStorage.removeItem(CURRENT_EMAIL_KEY);
+    localStorage.removeItem(CURRENT_ROLE_KEY);
+
     programDocs.length = 0;
     programDocs.push(...initialFallbackPrograms);
-    
-    // Reset users and tasks arrays
-    users.length = 0;
-    tasks.length = 0;
-    
-    // Save clean state
-    saveLocalPrograms();
-    saveUsers();
-    saveTasks();
-    
-    // Re-render programs
+    savePrograms();
+
     renderPrograms(programDocs);
-    
-    // Reset current user to visitor
-    currentUser.role = "visitor";
+
+    currentUser = {
+        id: "visitor",
+        role: "visitor",
+        email: null
+    };
+
+    if (roleSwitcher) roleSwitcher.value = "visitor";
     updateUserUI();
     setRoleBasedUI();
-    
+
     alert("Everything cleaned up! Reset to initial state.");
 };
 
-if (!useFirestore) {
-    console.warn("Firebase is not configured. Using local demo data instead.");
-}
+document.addEventListener("DOMContentLoaded", () => {
+    loadRoleFromSession();
+    const currentData = getCurrentUserData();
+    currentUser.id = currentData.id || currentData.email || currentUser.id;
 
-// Initialize programs
-syncProgramsFromTasksIfNeeded();
-listenPrograms();
+    updateUserUI();
+    setRoleBasedUI();
 
-// Fallback: ensure programs are rendered even if listenPrograms doesn't work
-// This handles browser caching issues
-document.addEventListener('DOMContentLoaded', () => {
-    // Image preview for program uploads
-    const fileInput = document.getElementById('programImage');
-    const preview = document.getElementById('programImagePreview');
+    const fileInput = document.getElementById("programImage");
+    const preview = document.getElementById("programImagePreview");
     if (fileInput && preview) {
-        fileInput.addEventListener('change', async () => {
+        fileInput.addEventListener("change", async () => {
             const file = fileInput.files && fileInput.files[0];
             if (!file) {
-                preview.style.display = 'none';
-                preview.src = '';
+                preview.style.display = "none";
+                preview.src = "";
                 return;
             }
             try {
                 preview.src = await readImageAsCompressedDataUrl(file);
-                preview.style.display = 'block';
+                preview.style.display = "block";
             } catch {
-                preview.style.display = 'none';
-                preview.src = '';
+                preview.style.display = "none";
+                preview.src = "";
             }
         });
     }
 
+    syncProgramsFromTasksIfNeeded();
+    listenPrograms();
+
     if (programDocs.length === 0) {
-        console.warn("Programs not loaded, attempting fallback...");
         listenPrograms();
     }
 });
 
-// Additional safety: re-render after a short delay to ensure DOM is ready
 setTimeout(() => {
     if (publicList && publicList.children.length === 0) {
-        console.warn("Program list empty, re-rendering...");
         renderPrograms(programDocs);
     }
 }, 100);
@@ -789,17 +860,23 @@ for (let i = 0; i < realSlides; i++) {
 }
 
 function fix() {
-    const w = slides[0].offsetWidth + 30;
+    if (!slides.length) return;
     if (index === 0) index = realSlides;
     if (index === slides.length - 1) index = 1;
 }
 
 function update() {
+    if (!carousel || !slides.length) return;
+
     fix();
     const w = slides[0].offsetWidth + 30;
     carousel.style.transform = `translateX(-${index * w}px)`;
+
     slides.forEach(s => s.classList.remove("active"));
-    slides[index].classList.add("active");
+    if (slides[index]) {
+        slides[index].classList.add("active");
+    }
+
     const dots = document.querySelectorAll(".dots span");
     dots.forEach((d, idx) => {
         d.classList.toggle("active", idx === index - 1);
@@ -832,9 +909,12 @@ function resetAutoSlide() {
 update();
 let autoSlide = setInterval(next, 5000);
 
-// Make functions global for onclick handlers
 window.prev = prev;
 window.next = next;
 window.go = go;
 window.submitProgram = submitProgram;
 window.closeModal = closeModal;
+window.closeDetailModal = closeDetailModal;
+window.editSelectedProgram = editSelectedProgram;
+window.deleteSelectedProgram = deleteSelectedProgram;
+window.joinProgram = joinProgram;
