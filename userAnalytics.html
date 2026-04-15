@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I-Tanim | User Analytics</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+  <link rel="stylesheet" href="css/userAnalytics.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">I-TANIM</div>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="programs.html">Programs</a>
+        <a href="profile.html">Profile</a>
+        <a href="login.html">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-wrapper">
+    <section class="welcome-section">
+      <div class="welcome-text">
+        <h1>Welcome, Demo User!</h1>
+        <p>User Analytics Overview</p>
+      </div>
+
+      <aside class="debug-panel">
+        <h3>DEBUG</h3>
+        <p>Debug Test Buttons</p>
+        <button type="button">Add Sample Data</button>
+        <button type="button" id="refreshAnalyticsBtn">Refresh Dashboard</button>
+      </aside>
+    </section>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-regular fa-clock"></i></div>
+        <h3>Total Hours</h3>
+        <div class="stat-number" id="totalHours">0</div>
+        <p>Community Service Hours</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-seedling"></i></div>
+        <h3>Programs Enrolled</h3>
+        <div class="stat-number" id="programsEnrolled">0</div>
+        <p>Active Programs</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-award"></i></div>
+        <h3>Badges Earned</h3>
+        <div class="stat-number" id="badgesEarned">0</div>
+        <p>Achievement Badges</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-certificate"></i></div>
+        <h3>Certifications</h3>
+        <div class="stat-number" id="certifications">0</div>
+        <p>Completed Certifications</p>
+      </div>
+    </section>
+
+    <section class="analytics-box">
+      <div class="section-header">
+        <h2>Task Progress</h2>
+      </div>
+
+      <div class="task-progress-list">
+        <article class="task-progress-card">
+          <div class="task-info">
+            <h3>TASK 1</h3>
+            <p>Seed Planting Activity</p>
+            <small>Details | Contact</small>
+          </div>
+
+          <div class="progress-area">
+            <div class="progress-ring" data-progress="100" data-color="#52c7c9">
+              <svg class="progress-svg" width="124" height="124" viewBox="0 0 124 124">
+                <circle class="bg" cx="62" cy="62" r="46"></circle>
+                <circle class="meter" cx="62" cy="62" r="46"></circle>
+              </svg>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <div class="status-area">
+            <div class="eligibility yes">ELIGIBLE</div>
+            <button class="status-btn green">CERTIFICATE</button>
+          </div>
+        </article>
+
+        <article class="task-progress-card">
+          <div class="task-info">
+            <h3>TASK 2</h3>
+            <p>Composting Waste</p>
+            <small>Details | Contact</small>
+          </div>
+
+          <div class="progress-area">
+            <div class="progress-ring" data-progress="75" data-color="#ff4c41">
+              <svg class="progress-svg" width="124" height="124" viewBox="0 0 124 124">
+                <circle class="bg" cx="62" cy="62" r="46"></circle>
+                <circle class="meter" cx="62" cy="62" r="46"></circle>
+              </svg>
+              <span>75%</span>
+            </div>
+          </div>
+
+          <div class="status-area">
+            <div class="eligibility no">NOT ELIGIBLE</div>
+            <button class="status-btn gray">CERTIFICATE</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="analytics-box">
+      <div class="section-header">
+        <h2>Recommended for You</h2>
+      </div>
+
+      <div class="bottom-grid">
+        <div class="recommendation-list">
+          <div class="recommend-card">
+            <img
+              src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=80"
+              alt="Seed planting"
+            />
+            <div class="recommend-body">
+              <h3>SEED PLANTING</h3>
+              <h4>IN SAUYO</h4>
+              <p>Suggested volunteer activity for environmental participation and community involvement.</p>
+            </div>
+          </div>
+
+          <div class="recommend-card">
+            <img
+              src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=900&q=80"
+              alt="Composting waste"
+            />
+            <div class="recommend-body">
+              <h3>COMPOSTING WASTE</h3>
+              <h4>IN SAUYO</h4>
+              <p>Build sustainable waste habits while contributing to local urban farming initiatives.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="leaderboard">
+          <div class="leaderboard-header">
+            <h3>Leaderboard</h3>
+            <span>See All</span>
+          </div>
+
+          <div class="leader-item">
+            <div class="leader-user">
+              <i class="fa-solid fa-circle-user"></i>
+              <strong>USERNAME</strong>
+            </div>
+            <div class="leader-hours">
+              <i class="fa-solid fa-trophy"></i>
+              <span>143 hours</span>
+            </div>
+          </div>
+
+          <div class="leader-item">
+            <div class="leader-user">
+              <i class="fa-solid fa-circle-user"></i>
+              <strong>USERNAME</strong>
+            </div>
+            <div class="leader-hours">
+              <i class="fa-solid fa-trophy"></i>
+              <span>120 hours</span>
+            </div>
+          </div>
+
+          <div class="leader-item">
+            <div class="leader-user">
+              <i class="fa-solid fa-circle-user"></i>
+              <strong>USERNAME</strong>
+            </div>
+            <div class="leader-hours">
+              <i class="fa-solid fa-trophy"></i>
+              <span>90 hours</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/userAnalytics.js"></script>
+</body>
+</html>
