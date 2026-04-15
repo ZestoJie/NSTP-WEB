@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GrowSauYou | Log In</title>
+  <title>GrowSauYou | Registration Successful</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="registrationSuccess.css">
 </head>
-<body class="pageLogin">
+<body class="pageRegisterSuccess">
   <div class="app-shell">
     <header class="topbar">
       <div class="brand">
         <img class="brandMarkImage" src="Resources/SYSTEM-WIDE LOGO.png" alt="GrowSauYou logo">
         <span class="brandName wordmark">
-          <span>GrowSauYOU</span>
+          <span>GrowSa</span><img class="wordmarkLogo wordmarkLogoSmall" src="Resources/SYSTEM-WIDE LOGO.png" alt="" aria-hidden="true"><span>You</span>
         </span>
       </div>
       <div class="topbar-right">
@@ -28,30 +28,32 @@
     </header>
 
     <main class="pageShell">
-      <div class="formPage loginLayout">
-        <a class="backLink" href="welcomePage.html">
+      <section class="successPage">
+        <a class="backLink" href="register.html">
           <span class="arrow">&larr;</span>
           <span class="miniBrand wordmark">
-            <span>GrowSauYOU</span>
+            <span>GrowSa</span><img class="wordmarkLogo wordmarkLogoMini" src="Resources/SYSTEM-WIDE LOGO.png" alt="" aria-hidden="true"><span>YOU</span>
           </span>
         </a>
 
-        <div class="pageTitle compact">
-          <h2>Log In</h2>
-          <p>Get notified and stay updated</p>
+        <div class="successHeader">
+          <h1>Registration Successful</h1>
+          <p>Thank you for volunteering.</p>
         </div>
 
-        <form class="softPanel formPanel loginPanel">
-          <div class="fieldRow">
-            <input type="email" placeholder="Gmail">
+        <div class="softPanel successPanel">
+          <div class="successMessage">
+            Your application is currently <strong>pending</strong> and is under review.
+            You will be notified once approved
           </div>
-          <div class="fieldRow submitRow">
-            <a class="wideBtn actionLink" href="dashboard.html">LOG IN</a>
+
+          <div class="successActions">
+            <a class="successPrimary actionLink" href="dashboard.html">Check Dashboard</a>
+            <a class="successSecondary actionLink" href="welcomePage.html">Return to Home</a>
           </div>
-        </form>
-      </div>
+        </div>
+      </section>
     </main>
   </div>
 </body>
 </html>
-

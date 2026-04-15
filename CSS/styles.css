@@ -86,6 +86,38 @@ body::after {
   color: var(--olive);
 }
 
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  line-height: 1;
+}
+
+.wordmarkLogo {
+  display: inline-block;
+  object-fit: contain;
+  object-position: center;
+  flex: 0 0 auto;
+}
+
+.wordmarkLogoSmall {
+  width: 16px;
+  height: 22px;
+  margin: -2px 1px 0;
+}
+
+.wordmarkLogoMini {
+  width: 15px;
+  height: 20px;
+  margin: -2px 1px 0;
+}
+
+.wordmarkLogoHero {
+  width: 60px;
+  height: 82px;
+  margin: -12px 4px -6px;
+}
+
 .brandMarkImage {
   display: block;
   width: 18px;
@@ -261,6 +293,12 @@ body::after {
   line-height: 1;
 }
 
+.heroTitle {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0;
+}
+
 .heroLogo h1 {
   font-size: clamp(52px, 8vw, 86px);
   font-weight: 800;
@@ -284,42 +322,10 @@ body::after {
 
 .galleryCard {
   aspect-ratio: 1 / 1;
-  border: 3px solid rgba(88, 120, 71, 0.18);
+  border: 3px solid rgb(0, 0, 0);
   box-shadow: 0 6px 12px rgba(70, 55, 25, 0.18);
   background-size: cover;
   background-position: center;
-}
-
-.nature1 {
-  background-image:
-    linear-gradient(45deg, rgba(255, 255, 255, 0.08), transparent 40%),
-    radial-gradient(circle at 30% 30%, #73aa42 0 18%, transparent 19%),
-    radial-gradient(circle at 63% 42%, #2d6b33 0 16%, transparent 17%),
-    radial-gradient(circle at 75% 17%, #8fba47 0 12%, transparent 13%),
-    linear-gradient(135deg, #285b28 0%, #8fc84a 46%, #214a1f 100%);
-}
-
-.nature2 {
-  background-image:
-    linear-gradient(180deg, #d0e7ff 0%, #91c6ef 40%, #d7f0ff 100%),
-    linear-gradient(82deg, transparent 0 48%, #84ad47 48% 62%, transparent 62%),
-    linear-gradient(98deg, transparent 0 38%, #6c9140 38% 52%, transparent 52%);
-  position: relative;
-}
-
-.nature2::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(76deg, transparent 0 44%, rgba(95, 131, 65, 0.95) 44% 54%, transparent 54%),
-    linear-gradient(106deg, transparent 0 56%, rgba(105, 144, 71, 0.92) 56% 66%, transparent 66%);
-}
-
-.nature3 {
-  background-image:
-    linear-gradient(180deg, #d8effb 0%, #eff8ff 48%, #f4f7da 100%),
-    repeating-linear-gradient(110deg, rgba(126, 166, 53, 0.95) 0 18px, rgba(214, 228, 126, 0.95) 18px 36px);
 }
 
 .heroActions {
@@ -417,6 +423,79 @@ body::after {
 .formPanel {
   display: grid;
   gap: 10px;
+}
+
+.successPage {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-top: 34px;
+}
+
+.successHeader {
+  text-align: center;
+  margin: 16px 0 18px;
+}
+
+.successHeader h1 {
+  margin: 0;
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: 1.04;
+  font-weight: 700;
+  color: var(--olive);
+}
+
+.successHeader p {
+  margin: 4px 0 0;
+  font-size: 19px;
+}
+
+.successPanel {
+  max-width: 950px;
+  padding: 34px 32px 36px;
+  background: rgba(226, 219, 187, 0.34);
+}
+
+.successMessage {
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+  padding: 28px 30px;
+  border: 4px solid rgba(177, 186, 146, 0.9);
+  border-radius: 10px;
+  background: rgba(200, 211, 169, 0.58);
+  text-align: center;
+  font-size: clamp(22px, 2.5vw, 28px);
+  line-height: 1.3;
+}
+
+.successActions {
+  display: grid;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.successPrimary,
+.successSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 442px;
+  min-height: 42px;
+  border-radius: 8px;
+  border: 4px solid var(--olive);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.successPrimary {
+  background: var(--olive);
+  color: #f8f4ea;
+}
+
+.successSecondary {
+  background: rgba(249, 245, 233, 0.78);
+  color: var(--olive);
 }
 
 .fieldRow {
@@ -527,7 +606,7 @@ select {
   background: rgba(246, 239, 225, 0.14);
 }
 
-.icon-home,
+.iconHomeImage,
 .icon-user,
 .icon-chart {
   position: absolute;
@@ -535,25 +614,11 @@ select {
   margin: auto;
 }
 
-.icon-home {
-  width: 26px;
-  height: 26px;
-  border-bottom: 7px solid rgba(88, 120, 71, 0.95);
-  border-left: 7px solid rgba(88, 120, 71, 0.95);
-  border-right: 7px solid rgba(88, 120, 71, 0.95);
-  border-radius: 1px 1px 3px 3px;
-}
-
-.icon-home::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  top: -18px;
-  width: 32px;
-  height: 32px;
-  border-top: 7px solid rgba(88, 120, 71, 0.95);
-  border-left: 7px solid rgba(88, 120, 71, 0.95);
-  transform: rotate(45deg);
+.iconHomeImage {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  object-position: center;
 }
 
 .icon-user {
@@ -782,7 +847,15 @@ select {
   background: rgba(251, 247, 236, 0.7);
   overflow: hidden;
   margin-top: 8px;
-  padding: 6px 8px 18px;
+  padding: 0;
+}
+
+.chartPlot {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 8px;
+  bottom: 20px;
 }
 
 .chartGrid {
@@ -790,31 +863,34 @@ select {
   inset: 0;
   background:
     repeating-linear-gradient(180deg, transparent 0 24px, rgba(173, 163, 127, 0.22) 24px 26px),
-    linear-gradient(90deg, rgba(173, 163, 127, 0.22) 0 2px, transparent 2px 100%);
+    repeating-linear-gradient(90deg, rgba(173, 163, 127, 0.22) 0 1px, transparent 1px calc(100% / 7));
 }
 
 .chartLine {
   position: absolute;
-  inset: 8px 8px 20px 8px;
-  width: calc(100% - 16px);
-  height: calc(100% - 28px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .chartLine circle {
   fill: var(--olive-dark);
+  stroke: rgba(251, 247, 236, 0.95);
+  stroke-width: 3;
 }
 
 .chartLabels {
   position: absolute;
-  left: 8px;
-  right: 8px;
+  left: 10px;
+  right: 10px;
   bottom: 2px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 0;
   font-size: 9px;
   font-weight: 600;
   color: var(--olive-dark);
+  text-align: center;
 }
 
 .recentItem {
@@ -938,6 +1014,25 @@ select {
   }
 
   .progressBar {
+    min-width: 100%;
+  }
+
+  .successPage {
+    padding-top: 16px;
+  }
+
+  .successPanel {
+    padding: 20px 14px 24px;
+  }
+
+  .successMessage {
+    min-height: 124px;
+    padding: 22px 16px;
+    font-size: 20px;
+  }
+
+  .successPrimary,
+  .successSecondary {
     min-width: 100%;
   }
 }

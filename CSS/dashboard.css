@@ -1,0 +1,476 @@
+:root {
+  --bg: #f6efe1;
+  --panel-strong: #dfcfaa;
+  --field: rgba(197, 208, 166, 0.74);
+  --stroke: #b1ba92;
+  --olive: #587847;
+  --olive-dark: #4d6a3f;
+  --shadow: 0 16px 22px rgba(82, 68, 33, 0.22);
+  --inner-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: var(--olive);
+  background:
+    radial-gradient(circle at 8% 38%, rgba(232, 220, 182, 0.55) 0 38px, transparent 39px),
+    radial-gradient(circle at 88% 30%, rgba(232, 220, 182, 0.4) 0 36px, transparent 37px),
+    linear-gradient(180deg, #f9f4e8 0%, var(--bg) 100%);
+  overflow-x: hidden;
+}
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+}
+body::before {
+  background:
+    radial-gradient(circle at 18% 78%, rgba(167, 180, 120, 0.65) 0 72px, transparent 73px),
+    radial-gradient(circle at 74% 72%, rgba(167, 180, 120, 0.45) 0 88px, transparent 89px);
+}
+body::after {
+  background:
+    radial-gradient(120px 220px at 7% 85%, transparent 64%, rgba(212, 196, 149, 0.7) 65% 68%, transparent 69%),
+    radial-gradient(120px 220px at 19% 70%, transparent 64%, rgba(212, 196, 149, 0.55) 65% 68%, transparent 69%),
+    radial-gradient(120px 220px at 83% 78%, transparent 64%, rgba(212, 196, 149, 0.65) 65% 68%, transparent 69%),
+    radial-gradient(120px 220px at 73% 62%, transparent 64%, rgba(212, 196, 149, 0.5) 65% 68%, transparent 69%);
+}
+.app-shell {
+  min-height: 100vh;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 6px 12px 7px;
+  background: linear-gradient(180deg, #ead7af 0%, #e6d2a8 100%);
+  border-bottom: 1px solid rgba(88, 120, 71, 0.18);
+}
+.brand,
+.topbar-right,
+.socials {
+  display: flex;
+  align-items: center;
+}
+.brand {
+  gap: 8px;
+}
+.brandName {
+  font-size: 15px;
+  color: var(--olive);
+}
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  line-height: 1;
+}
+.wordmarkLogo {
+  display: inline-block;
+  object-fit: contain;
+  object-position: center;
+  flex: 0 0 auto;
+}
+.wordmarkLogoSmall {
+  width: 16px;
+  height: 22px;
+  margin: -2px 1px 0;
+}
+.wordmarkLogoMini {
+  width: 15px;
+  height: 20px;
+  margin: -2px 1px 0;
+}
+.wordmarkLogoHero {
+  width: 60px;
+  height: 82px;
+  margin: -12px 4px -6px;
+}
+.brandMarkImage {
+  display: block;
+  width: 18px;
+  height: 22px;
+  object-fit: contain;
+  object-position: center;
+}
+.topbar-right {
+  gap: 12px;
+  margin-left: auto;
+}
+.hotline {
+  font-size: 12px;
+  color: rgba(88, 120, 71, 0.85);
+}
+.socials {
+  gap: 8px;
+}
+.social-icon {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: var(--olive);
+  border: 2px solid var(--olive);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+}
+.pageShell {
+  min-height: calc(100vh - 40px);
+  padding: 18px 28px 28px;
+}
+.actionLink {
+  text-decoration: none;
+}
+@media (max-width: 900px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+@media (max-width: 640px) {
+  .pageShell {
+    padding: 14px 14px 22px;
+  }
+  .hotline {
+    font-size: 10px;
+  }
+}.dashboardLayout {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  min-height: calc(100vh - 40px);
+}
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: #a8ba86;
+}
+.nav-icon {
+  width: 70px;
+  height: 76px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+.nav-icon.active {
+  background: rgba(246, 239, 225, 0.14);
+}
+.iconHomeImage,
+.icon-user,
+.icon-chart {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+.iconHomeImage {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  object-position: center;
+}
+.icon-user {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(242, 234, 208, 0.55);
+  box-shadow: inset 0 0 0 2px rgba(88, 120, 71, 0.28);
+}
+.icon-user::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(242, 234, 208, 0.7);
+}
+.icon-user::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  bottom: 7px;
+  width: 20px;
+  height: 10px;
+  border-radius: 10px 10px 4px 4px;
+  background: rgba(242, 234, 208, 0.7);
+}
+.icon-chart {
+  width: 30px;
+  height: 30px;
+}
+.icon-chart::before,
+.icon-chart::after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  width: 4px;
+  background: rgba(88, 120, 71, 0.95);
+  border-radius: 2px;
+}
+.icon-chart::before {
+  left: 3px;
+  height: 14px;
+  box-shadow: 8px -5px 0 rgba(88, 120, 71, 0.95), 16px -12px 0 rgba(88, 120, 71, 0.95);
+}
+.icon-chart::after {
+  left: 24px;
+  height: 20px;
+}
+.dashboardContent {
+  padding: 12px 28px 20px;
+}
+.welcome {
+  margin: 10px 0 16px;
+  line-height: 1;
+  font-size: clamp(34px, 4.5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 1.25fr 1.05fr 0.95fr;
+  gap: 18px;
+  grid-template-areas:
+    "profile profile status"
+    "badge hours programs"
+    "progress progress progress"
+    "chart chart recent";
+}
+.card {
+  background: var(--panel-strong);
+  border-radius: 28px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+}
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+.cardProfile { grid-area: profile; min-height: 130px; }
+.cardStatus { grid-area: status; min-height: 130px; }
+.cardBadge { grid-area: badge; min-height: 160px; }
+.cardHours { grid-area: hours; min-height: 160px; text-align: center; }
+.cardPrograms { grid-area: programs; min-height: 160px; text-align: center; }
+.cardProgress { grid-area: progress; min-height: 134px; }
+.cardChart { grid-area: chart; min-height: 210px; }
+.cardRecent { grid-area: recent; min-height: 210px; }
+.profile-name,
+.statusText,
+.metric,
+.cardRecent strong {
+  font-weight: 800;
+  color: var(--olive-dark);
+}
+.profile-name {
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+.profile-id {
+  font-size: 20px;
+  font-weight: 700;
+}
+.statusText {
+  font-size: 30px;
+  line-height: 1.05;
+  margin-bottom: 4px;
+}
+.cardStatus p,
+.cardProgress p,
+.recentItem span {
+  margin: 0;
+  font-size: 14px;
+}
+.badgeRow,
+.progressRow {
+  display: flex;
+  align-items: center;
+}
+.badgeRow {
+  justify-content: space-between;
+  gap: 12px;
+}
+.badgeMeta span,
+.badgeMeta strong {
+  display: block;
+  font-size: 18px;
+}
+.medal {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  position: relative;
+  flex: 0 0 auto;
+}
+.medal::before,
+.medal::after {
+  content: "";
+  position: absolute;
+  bottom: -18px;
+  width: 16px;
+  height: 28px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.medal::before { left: 8px; }
+.medal::after { right: 8px; }
+.silver {
+  background: radial-gradient(circle at 30% 30%, #dfe4ea, #858d98 70%, #c7d0da);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+.silver::before,
+.silver::after {
+  background: linear-gradient(180deg, #9ca7b3, #687483);
+}
+.gold {
+  background: radial-gradient(circle at 30% 30%, #ffeaa0, #c99625 65%, #f7d76e);
+  box-shadow: inset 0 0 0 3px rgba(255, 244, 186, 0.48);
+}
+.gold::before,
+.gold::after {
+  background: linear-gradient(180deg, #f0cf74, #c59329);
+}
+.metric {
+  font-size: 64px;
+  line-height: 1;
+  margin-top: 8px;
+}
+.metricLabel {
+  font-size: 22px;
+  font-weight: 800;
+}
+.progressRow {
+  gap: 10px;
+  margin: 8px 0 6px;
+}
+.progressBar {
+  position: relative;
+  flex: 1;
+  height: 50px;
+  border-radius: 25px;
+  background: rgba(250, 247, 239, 0.92);
+  border: 3px solid #252525;
+  padding: 4px;
+}
+.progressFill {
+  height: 100%;
+  border-radius: 18px;
+  background: var(--olive);
+}
+.progressValue {
+  font-size: 28px;
+  font-weight: 800;
+}
+.chartArea {
+  position: relative;
+  height: 130px;
+  border-radius: 2px;
+  background: rgba(251, 247, 236, 0.7);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.chartPlot {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 8px;
+  bottom: 20px;
+}
+.chartGrid {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 24px, rgba(173, 163, 127, 0.22) 24px 26px),
+    repeating-linear-gradient(90deg, rgba(173, 163, 127, 0.22) 0 1px, transparent 1px calc(100% / 7));
+}
+.chartLine {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.chartLine circle {
+  fill: var(--olive-dark);
+  stroke: rgba(251, 247, 236, 0.95);
+  stroke-width: 3;
+}
+.chartLabels {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--olive-dark);
+  text-align: center;
+}
+.recentItem {
+  margin-bottom: 14px;
+}
+.recentItem strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1.1;
+}
+@media (max-width: 900px) {
+  .dashboardLayout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    flex-direction: row;
+    height: 70px;
+  }
+  .nav-icon {
+    width: 76px;
+    height: 70px;
+  }
+  .dashboardGrid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "profile status"
+      "badge hours"
+      "programs programs"
+      "progress progress"
+      "chart recent";
+  }
+}
+@media (max-width: 640px) {
+  .dashboardContent {
+    padding: 12px 14px 20px;
+  }
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "profile"
+      "status"
+      "badge"
+      "hours"
+      "programs"
+      "progress"
+      "chart"
+      "recent";
+  }
+  .progressRow {
+    flex-wrap: wrap;
+  }
+  .progressBar {
+    min-width: 100%;
+  }
+}
