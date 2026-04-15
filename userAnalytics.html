@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Analytics</title>
+  <title>I-Tanim | User Analytics</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,63 +19,78 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
-      <i class="fa-solid fa-seedling"></i>
-      <span>GrowSauYou</span>
-    </div>
+    <div class="topbar-inner">
+      <div class="logo">I-TANIM</div>
 
-    <div class="hotline">BRGY SAUYO HOTLINE: 0919 096 6996</div>
-
-    <div class="top-icons">
-      <i class="fa-brands fa-instagram"></i>
-      <i class="fa-brands fa-facebook"></i>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="programs.html">Programs</a>
+        <a href="profile.html">Profile</a>
+        <a href="login.html">Logout</a>
+      </nav>
     </div>
   </header>
 
-  <div class="page">
-    <aside class="sidebar">
-      <a href="#" class="side-btn">
-        <i class="fa-solid fa-house"></i>
-      </a>
-      <a href="#" class="side-btn">
-        <i class="fa-solid fa-circle-user"></i>
-      </a>
-      <a href="#" class="side-btn active">
-        <i class="fa-solid fa-chart-column"></i>
-      </a>
-    </aside>
+  <main class="page-wrapper">
+    <section class="welcome-section">
+      <div class="welcome-text">
+        <h1>Welcome, Demo User!</h1>
+        <p>User Analytics Overview</p>
+      </div>
 
-    <main class="main">
-      <h1>USERNAME | MY DASHBOARD</h1>
+      <aside class="debug-panel">
+        <h3>DEBUG</h3>
+        <p>Debug Test Buttons</p>
+        <button type="button">Add Sample Data</button>
+        <button type="button" id="refreshAnalyticsBtn">Refresh Dashboard</button>
+      </aside>
+    </section>
 
-      <section class="stats">
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-          <div class="stat-label">Tasks Completed</div>
-          <div class="stat-value">3</div>
-        </div>
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-regular fa-clock"></i></div>
+        <h3>Total Hours</h3>
+        <div class="stat-number" id="totalHours">0</div>
+        <p>Community Service Hours</p>
+      </div>
 
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fa-solid fa-award"></i></div>
-          <div class="stat-label">Certificates Earned</div>
-          <div class="stat-value">1</div>
-        </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-seedling"></i></div>
+        <h3>Programs Enrolled</h3>
+        <div class="stat-number" id="programsEnrolled">0</div>
+        <p>Active Programs</p>
+      </div>
 
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fa-regular fa-clock"></i></div>
-          <div class="stat-label">Hours Rendered</div>
-          <div class="stat-value">24</div>
-        </div>
-      </section>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-award"></i></div>
+        <h3>Badges Earned</h3>
+        <div class="stat-number" id="badgesEarned">0</div>
+        <p>Achievement Badges</p>
+      </div>
 
-      <section class="tasks">
-        <article class="task-panel">
-          <div class="task-left">
-            <h2>TASK 1</h2>
-            <p>Details &nbsp; Contact</p>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-certificate"></i></div>
+        <h3>Certifications</h3>
+        <div class="stat-number" id="certifications">0</div>
+        <p>Completed Certifications</p>
+      </div>
+    </section>
+
+    <section class="analytics-box">
+      <div class="section-header">
+        <h2>Task Progress</h2>
+      </div>
+
+      <div class="task-progress-list">
+        <article class="task-progress-card">
+          <div class="task-info">
+            <h3>TASK 1</h3>
+            <p>Seed Planting Activity</p>
+            <small>Details | Contact</small>
           </div>
 
-          <div class="task-center">
+          <div class="progress-area">
             <div class="progress-ring" data-progress="100" data-color="#52c7c9">
               <svg class="progress-svg" width="124" height="124" viewBox="0 0 124 124">
                 <circle class="bg" cx="62" cy="62" r="46"></circle>
@@ -85,19 +100,20 @@
             </div>
           </div>
 
-          <div class="task-right">
+          <div class="status-area">
             <div class="eligibility yes">ELIGIBLE</div>
-            <button class="cert-btn green">CERTIFICATE</button>
+            <button class="status-btn green">CERTIFICATE</button>
           </div>
         </article>
 
-        <article class="task-panel">
-          <div class="task-left">
-            <h2>TASK 2</h2>
-            <p>Details &nbsp; Contact</p>
+        <article class="task-progress-card">
+          <div class="task-info">
+            <h3>TASK 2</h3>
+            <p>Composting Waste</p>
+            <small>Details | Contact</small>
           </div>
 
-          <div class="task-center">
+          <div class="progress-area">
             <div class="progress-ring" data-progress="75" data-color="#ff4c41">
               <svg class="progress-svg" width="124" height="124" viewBox="0 0 124 124">
                 <circle class="bg" cx="62" cy="62" r="46"></circle>
@@ -107,47 +123,49 @@
             </div>
           </div>
 
-          <div class="task-right">
+          <div class="status-area">
             <div class="eligibility no">NOT ELIGIBLE</div>
-            <button class="cert-btn gray">CERTIFICATE</button>
+            <button class="status-btn gray">CERTIFICATE</button>
           </div>
         </article>
-      </section>
+      </div>
+    </section>
 
-      <section class="bottom-grid">
-        <div class="for-you-section">
-          <h2>FOR YOU</h2>
+    <section class="analytics-box">
+      <div class="section-header">
+        <h2>Recommended for You</h2>
+      </div>
 
-          <div class="for-you-cards">
-            <div class="recommend-card">
-              <img
-                src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=80"
-                alt="Seed planting"
-              />
-              <div class="recommend-body">
-                <h3>SEED PLANTING</h3>
-                <h4>IN SAUYO</h4>
-                <div class="fake-lines"></div>
-              </div>
+      <div class="bottom-grid">
+        <div class="recommendation-list">
+          <div class="recommend-card">
+            <img
+              src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=80"
+              alt="Seed planting"
+            />
+            <div class="recommend-body">
+              <h3>SEED PLANTING</h3>
+              <h4>IN SAUYO</h4>
+              <p>Suggested volunteer activity for environmental participation and community involvement.</p>
             </div>
+          </div>
 
-            <div class="recommend-card">
-              <img
-                src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=900&q=80"
-                alt="Composting waste"
-              />
-              <div class="recommend-body">
-                <h3>COMPOSTING WASTE</h3>
-                <h4>IN SAUYO</h4>
-                <div class="fake-lines"></div>
-              </div>
+          <div class="recommend-card">
+            <img
+              src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=900&q=80"
+              alt="Composting waste"
+            />
+            <div class="recommend-body">
+              <h3>COMPOSTING WASTE</h3>
+              <h4>IN SAUYO</h4>
+              <p>Build sustainable waste habits while contributing to local urban farming initiatives.</p>
             </div>
           </div>
         </div>
 
         <aside class="leaderboard">
-          <div class="leader-top">
-            <h3>LEADERBOARD</h3>
+          <div class="leaderboard-header">
+            <h3>Leaderboard</h3>
             <span>See All</span>
           </div>
 
@@ -184,9 +202,9 @@
             </div>
           </div>
         </aside>
-      </section>
-    </main>
-  </div>
+      </div>
+    </section>
+  </main>
 
   <script src="js/userAnalytics.js"></script>
 </body>
